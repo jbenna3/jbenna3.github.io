@@ -1,0 +1,154 @@
+/* scratch.css - Jenna's Custom Stylesheet */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@400;600&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --orange: #f4722b;
+  --dark: #1a1a2e;
+  --light-bg: #fff8f2;
+  --card-bg: #ffffff;
+  --accent: #e8b86d;
+  --text: #2d2d2d;
+}
+
+/* ── Body & Background ── */
+body {
+  background-color: var(--light-bg);
+  font-family: 'Nunito', sans-serif;
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Headings ── */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--orange);
+}
+
+/* ── Hero Banner ── */
+.hero-div {
+  background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
+  color: white;
+  text-align: center;
+  padding: 70px 20px 50px;
+  position: relative;
+}
+
+.hero-div h1 {
+  font-size: 3rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.hero-div p {
+  font-size: 1.2rem;
+  color: #ccc;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── Navigation Bar ── */
+.nav-div {
+  background-color: var(--dark);
+  padding: 12px 30px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.nav-div a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+
+.nav-div a:hover {
+  color: var(--orange);
+}
+
+/* ── Main Content ── */
+.content-div {
+  max-width: 860px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* ── Cards for each hobby section ── */
+.card-div {
+  background: var(--card-bg);
+  border-left: 5px solid var(--orange);
+  border-radius: 10px;
+  padding: 30px 35px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+}
+
+/* ── Lists ── */
+ul, ol {
+  line-height: 2;
+  padding-left: 20px;
+}
+
+li {
+  font-size: 1rem;
+}
+
+/* ── Images ── */
+img.hobby-img {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 12px;
+  display: block;
+  margin: 20px auto;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+
+/* ── YouTube embed wrapper ── */
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 20px 0;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ── Tableau embed ── */
+.tableau-wrapper {
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* ── Footer ── */
+footer {
+  background-color: var(--dark);
+  color: #aaa;
+  text-align: center;
+  padding: 25px;
+  font-size: 0.9rem;
+  margin-top: 60px;
+}
+
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}

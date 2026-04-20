@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Random Fun Facts Quiz</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #0f0f1a;
+      --card: #1e1e30;
+      --orange: #f4722b;
+      --yellow: #f9c74f;
+      --green: #43aa8b;
+      --red: #e63946;
+      --text: #f0f0f0;
+      --muted: #9999bb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 30px 20px 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-family: 'Righteous', cursive;
+      font-size: 2.8rem;
+      color: var(--yellow);
+      letter-spacing: 1px;
+      text-shadow: 0 0 20px rgba(249,199,79,0.3);
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 1rem;
+    }
+
+    #quiz-container {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 36px 40px;
+      max-width: 680px;
+      width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    #progress-bar-wrap {
+      background: #2e2e44;
+      border-radius: 20px;
+      height: 8px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--orange), var(--yellow));
+      border-radius: 20px;
+      transition: width 0.4s ease;
+    }
+
+    #question-counter {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    #question-text {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 28px;
+      color: var(--text);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .option-btn {
+      background: #2a2a40;
+      border: 2px solid #3a3a55;
+      color: var(--text);
+      padding: 16px 14px;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--orange);
+      background: #35354e;
+      transform: translateY(-2px);
+    }
+
+    .option-btn.correct {
+      background: rgba(67,170,139,0.2);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .option-btn.wrong {
+      background: rgba(230,57,70,0.15);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    #feedback {
+      margin-top: 20px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      min-height: 50px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    #feedback.show {
+      opacity: 1;
+    }
+
+    #feedback.correct-fb {
+      background: rgba(67,170,139,0.15);
+      color: var(--green);
+      border-left: 4px solid var(--green);
+    }
+
+    #feedback.wrong-fb {
+      background: rgba(230,57,70,0.1);
+      color: #ff8a92;
+      border-left: 4px solid var(--red);
+    }
+
+    #next-btn {
+      display: none;
+      margin-top: 22px;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--orange), #e05a20);
+      color: white;
+      font-family: 'Righteous', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(244,114,43,0.35);
+    }
+
+    #next-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(244,114,43,0.5);
+    }
+
+    /* Score screen */
+    #score-screen {
+      display: none;
+      text-align: center;
+    }
+
+    #score-screen h2 {
+      font-family: 'Righteous', cursive;
+      font-size: 2.2rem;
+      color: var(--yellow);
+      margin-bottom: 10px;
+    }
+
+    #score-display {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin: 20px 0 10px;
+    }
+
+    #score-message {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    #restart-btn {
+      padding: 14px 40px;
+      background: linear-gradient(135deg, var(--yellow), #e8a820);
+      color: #1a1a1a;
+      font-family: 'Righteous', cursive;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    #restart-btn:hover { transform: scale(1.04); }
+
+    .score-bar {
+      background: #2e2e44;
+      border-radius: 20px;
+      height: 14px;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 24px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--orange), var(--yellow));
+      border-radius: 20px;
+      transition: width 1s ease;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌍 Random Fun Facts Quiz</h1>
+    <p>How much do you actually know? Let's find out.</p>
+  </header>
+
+  <div id="quiz-container">
+    <!-- Quiz view -->
+    <div id="quiz-view">
+      <div id="progress-bar-wrap"><div id="progress-bar" style="width:0%"></div></div>
+      <div id="question-counter">Question 1 of 10</div>
+      <div id="question-text">Loading...</div>
+      <div class="options-grid" id="options-grid"></div>
+      <div id="feedback"></div>
+      <button id="next-btn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+
+    <!-- Score view -->
+    <div id="score-screen">
+      <h2>Quiz Complete! 🎉</h2>
+      <div id="score-display">0/10</div>
+      <div class="score-bar"><div class="score-bar-fill" id="score-bar-fill" style="width:0%"></div></div>
+      <div id="score-message"></div>
+      <button id="restart-btn" onclick="restartQuiz()">Play Again</button>
+    </div>
+  </div>
+
+  <a href="scratch.html" class="back-link">← Back to Jenna's Hobbies Page</a>
+
+  <script>
+    const questions = [
+      {
+        q: "Honey never spoils. Archaeologists have found 3,000-year-old honey in Egyptian tombs that was still edible. Why?",
+        options: ["It contains preservatives", "Its low moisture and acidic pH prevent bacterial growth", "It freezes at room temperature", "It's too sweet for bacteria"],
+        answer: 1,
+        fact: "Honey's low water content and hydrogen peroxide content make it nearly impossible for microbes to survive in it."
+      },
+      {
+        q: "A group of flamingos is called a:",
+        options: ["Flock", "Pack", "Flamboyance", "Flutter"],
+        answer: 2,
+        fact: "A group of flamingos is officially called a 'flamboyance' — which is very fitting for such a colorful bird!"
+      },
+      {
+        q: "How many hearts does an octopus have?",
+        options: ["1", "2", "3", "4"],
+        answer: 2,
+        fact: "Octopuses have 3 hearts: two pump blood to the gills, and one pumps it to the rest of the body."
+      },
+      {
+        q: "The Great Wall of China is visible from space with the naked eye.",
+        options: ["True", "False"],
+        answer: 1,
+        fact: "This is a common myth! The wall is too narrow to be seen from space without aid. Even astronauts have confirmed this."
+      },
+      {
+        q: "What percentage of the ocean has been explored by humans?",
+        options: ["About 5%", "About 25%", "About 50%", "About 80%"],
+        answer: 0,
+        fact: "Only about 5% of Earth's oceans have been explored. More is known about the surface of Mars than the ocean floor."
+      },
+      {
+        q: "Cleopatra lived closer in time to the Moon landing than to the construction of the Great Pyramid of Giza.",
+        options: ["True", "False"],
+        answer: 0,
+        fact: "The pyramids were built around 2560 BC, Cleopatra lived around 30 BC, and the Moon landing was 1969. She's much closer to us!"
+      },
+      {
+        q: "Which country consumes the most chocolate per person per year?",
+        options: ["USA", "Belgium", "Switzerland", "Germany"],
+        answer: 2,
+        fact: "Switzerland tops the list with roughly 10 kg of chocolate consumed per person per year!"
+      },
+      {
+        q: "A day on Venus is longer than a year on Venus.",
+        options: ["True", "False"],
+        answer: 0,
+        fact: "Venus rotates so slowly that it takes 243 Earth-days to complete one rotation, but only 225 Earth-days to orbit the Sun."
+      },
+      {
+        q: "What is the strongest muscle in the human body relative to its size?",
+        options: ["Heart", "Jaw (masseter)", "Thigh", "Tongue"],
+        answer: 1,
+        fact: "The masseter (jaw muscle) is the strongest relative to its size. It can exert up to 200 pounds of force on molars."
+      },
+      {
+        q: "Bananas are technically classified as:",
+        options: ["A fruit", "A vegetable", "A berry", "A legume"],
+        answer: 2,
+        fact: "Botanically, bananas are berries! Meanwhile, strawberries are not — they're 'accessory fruits.' Nature is wild."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let shuffled = [];
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function startQuiz() {
+      shuffled = shuffle(questions);
+      current = 0;
+      score = 0;
+      document.getElementById('quiz-view').style.display = 'block';
+      document.getElementById('score-screen').style.display = 'none';
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = shuffled[current];
+      const total = shuffled.length;
+
+      document.getElementById('question-counter').textContent = `Question ${current + 1} of ${total}`;
+      document.getElementById('progress-bar').style.width = `${(current / total) * 100}%`;
+      document.getElementById('question-text').textContent = q.q;
+
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = q.options.length === 2 ? '1fr 1fr' : '1fr 1fr';
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(i);
+        grid.appendChild(btn);
+      });
+
+      const fb = document.getElementById('feedback');
+      fb.textContent = '';
+      fb.className = '';
+      fb.classList.remove('show');
+      document.getElementById('next-btn').style.display = 'none';
+    }
+
+    function selectAnswer(chosen) {
+      const q = shuffled[current];
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      const fb = document.getElementById('feedback');
+
+      if (chosen === q.answer) {
+        score++;
+        buttons[chosen].classList.add('correct');
+        fb.textContent = '✅ Correct! ' + q.fact;
+        fb.className = 'correct-fb show';
+      } else {
+        buttons[chosen].classList.add('wrong');
+        buttons[q.answer].classList.add('correct');
+        fb.textContent = '❌ Not quite. ' + q.fact;
+        fb.className = 'wrong-fb show';
+      }
+
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current >= shuffled.length) {
+        showScore();
+      } else {
+        loadQuestion();
+      }
+    }
+
+    function showScore() {
+      document.getElementById('quiz-view').style.display = 'none';
+      const ss = document.getElementById('score-screen');
+      ss.style.display = 'block';
+
+      const pct = Math.round((score / shuffled.length) * 100);
+      document.getElementById('score-display').textContent = `${score}/${shuffled.length}`;
+
+      setTimeout(() => {
+        document.getElementById('score-bar-fill').style.width = pct + '%';
+      }, 100);
+
+      let msg;
+      if (pct === 100) msg = "Perfect score! You're basically a genius. 🧠";
+      else if (pct >= 80) msg = "Impressive! You really know your stuff. 🌟";
+      else if (pct >= 60) msg = "Not bad! A few surprises in there, huh? 😄";
+      else if (pct >= 40) msg = "Room to grow — but hey, now you learned something! 📚";
+      else msg = "The facts got you this time. Give it another shot! 💪";
+
+      document.getElementById('score-message').textContent = msg;
+      document.getElementById('progress-bar').style.width = '100%';
+    }
+
+    function restartQuiz() {
+      startQuiz();
+    }
+
+    // Init
+    startQuiz();
+  </script>
+
+</body>
+</html>
